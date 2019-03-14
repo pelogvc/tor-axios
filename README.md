@@ -50,7 +50,7 @@ tor.torSetup({
 })
 ```
 
-##Enable Tor ControlPort
+## Enable Tor ControlPort
 
 You need to enable the Tor ControlPort if you want to programmatically refresh the Tor session (i.e., get a new proxy IP address) without restarting your Tor client.
 
