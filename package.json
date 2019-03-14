@@ -1,0 +1,25 @@
+{
+  "name": "tor-axios",
+  "version": "1.0.0",
+  "description": "use axios with tor",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "socks-proxy-agent": "^4.0.2"
+  },
+  "devDependencies": {
+    "mocha": "^6.0.2"
+  },
+  "scripts": {
+    "test": "mocha test/test.js"
+  },
+  "author": "pelogvc",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pelogvc/tor-axios"
+  }
+}
