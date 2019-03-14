@@ -10,7 +10,7 @@ let torConfig = {
     port: '9050',
     path: '',
     controlPort: '9051',
-    contorlPassword: 'giraffe',
+    controlPassword: 'giraffe',
 }
 
 function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9051', controlPassword = 'giraffe' }) {
@@ -54,7 +54,7 @@ function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9
     torConfig.port = port;
     torConfig.path = path;
     torConfig.controlPort = controlPort;
-    torConfig.contorlPassword = controlPassword;
+    torConfig.controlPassword = controlPassword;
 
     return path;
 }
@@ -87,7 +87,7 @@ function torIPC(commands) {
 
 function torNewSession() {
     let commands = [
-        'authenticate "' + torConfig.contorlPassword + '"', // authenticate the connection
+        'authenticate "' + torConfig.controlPassword + '"', // authenticate the connection
         'signal newnym', // send the signal (renew Tor session)
         'quit' // close the connection
     ];

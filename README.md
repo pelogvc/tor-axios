@@ -41,7 +41,7 @@ tor & # run as background process
 
 If you want change tor path, You can change it.
 
-```
+```js
 const tor = require('tor-axios');
 tor.torSetup({
 	ip: 'localhost',
@@ -83,7 +83,7 @@ tor.torSetup({
 	port: 9050,
 	path: '/usr/local/etc/tor/torrc',
 	controlPort: '9051',
-    contorlPassword: 'giraffe',
+    controlPassword: 'giraffe',
 })
 
 let response = await tor.get('http://api.ipify.org');
