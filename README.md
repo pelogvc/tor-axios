@@ -62,17 +62,6 @@ brew install tor
 tor & # run as background process
 ```
 
-If you want change tor path, You can change it.
-
-```js
-const tor_axios = require('tor-axios');
-const tor = tor_axios.torSetup({
-	ip: 'localhost',
-	port: 9050,
-	path: '/usr/local/etc/tor/torrc',
-})
-```
-
 ## Enable Tor ControlPort
 
 You need to enable the Tor ControlPort if you want to programmatically refresh the Tor session (i.e., get a new proxy IP address) without restarting your Tor client.
@@ -104,7 +93,6 @@ const tor_axios = require('tor-axios');
 const tor = tor_axios.torSetup({
 	ip: 'localhost',
 	port: 9050,
-	path: '/usr/local/etc/tor/torrc',
 	controlPort: '9051',
     controlPassword: 'giraffe',
 })
