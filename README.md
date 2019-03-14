@@ -36,8 +36,8 @@ const tor = tor_axios.torSetup({
 })
 
 const inst = axios.create({
-	httpAgent: tor.httpAgent,
-	httpsagent: tor.httpsAgent,
+	httpAgent: tor_axios.httpAgent,
+	httpsagent: tor_axios.httpsAgent,
 });
 
 let response = await inst.get('http://api.ipify.org');
