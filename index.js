@@ -56,7 +56,13 @@ function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9
     torConfig.controlPort = controlPort;
     torConfig.controlPassword = controlPassword;
 
-    return path;
+    return {
+        torNewSession,
+        ...axios.create({
+            httpAgent: new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`),
+            httpsAgent: new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`)
+        })
+    };
 }
 
 function torIPC(commands) {
@@ -113,12 +119,17 @@ function torNewSession() {
     });
 }
 
+let httpAgent = function() {
+    return new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`)
+}
+let httpsAgent = function() {
+    return new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`);
+}
+
 module.exports = {
     torSetup,
     torNewSession,
-    ...axios.create({
-        httpAgent: new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`),
-        httpsAgent: new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`)
-    }),
     torConfig,
+    httpAgent,
+    httpsAgent,
 }

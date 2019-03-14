@@ -13,8 +13,8 @@ $ npm install tor-axios
 ## example
 
 ```js
-const tor = require('tor-axios');
-tor.torSetup({
+const tor_axios = require('tor-axios');
+const tor = tor_axios.torSetup({
 	ip: 'localhost',
 	port: 9050,
 })
@@ -23,6 +23,29 @@ let response = await tor.get('http://api.ipify.org');
 let ip = response.data;
 console.log(ip);
 ```
+
+or
+
+```js
+const tor_axios = require('tor-axios');
+const axios = require('axios');
+
+const tor = tor_axios.torSetup({
+	ip: 'localhost',
+	port: 9050,
+})
+
+const inst = axios.create({
+	httpAgent: tor.httpAgent,
+	httpsagent: tor.httpsAgent,
+});
+
+let response = await inst.get('http://api.ipify.org');
+let ip = response.data;
+console.log(ip);
+```
+
+
 
 ## Requirements
 
@@ -42,8 +65,8 @@ tor & # run as background process
 If you want change tor path, You can change it.
 
 ```js
-const tor = require('tor-axios');
-tor.torSetup({
+const tor_axios = require('tor-axios');
+const tor = tor_axios.torSetup({
 	ip: 'localhost',
 	port: 9050,
 	path: '/usr/local/etc/tor/torrc',
@@ -77,8 +100,8 @@ HashedControlPassword 16:AEBC98A6777A318660659EC88648EF43EDACF4C20D564B20FF244E8
 After Example,
 
 ```js
-const tor = require('tor-axios');
-tor.torSetup({
+const tor_axios = require('tor-axios');
+const tor = tor_axios.torSetup({
 	ip: 'localhost',
 	port: 9050,
 	path: '/usr/local/etc/tor/torrc',

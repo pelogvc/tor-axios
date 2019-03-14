@@ -1,5 +1,13 @@
-const tor = require('../index.js');
+const tor_axios = require('../index.js');
 const axios = require('axios');
+
+const tor = tor_axios.torSetup({
+    ip: 'localhost',
+    port: 9050,
+    path: '',
+    controlPort: '9051',
+    contorlPassword: 'giraffe',
+});
 
 const url = "http://api.ipify.org";
 const httpsUrl = "https://api.ipify.org";
@@ -7,22 +15,12 @@ const httpsUrl = "https://api.ipify.org";
 describe('토르 테스트', function(){
 
     let realip = '';
-    let torip = 'dd';
-
-    it('axios 토르 셋업', async function() {
-        tor.torSetup({
-            ip: 'localhost',
-            port: 9050,
-            path: '',
-            controlPort: '9051',
-            contorlPassword: 'giraffe',
-        });
-    });
+    let torip = '';
 
     it('http로 아이피 확인', async function() {
         let response = await axios.get(url);
         realip = response.data;
-        //console.log(realip);
+        console.log(realip);
         if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(realip)){
             throw new Error('연결 실패');
         }
@@ -32,7 +30,7 @@ describe('토르 테스트', function(){
     it('http로 토르 아이피 확인', async function() {
         let torResponse = await tor.get(url);
         torip = torResponse.data;
-        //console.log(torip);
+        console.log(torip);
         if (!/^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(torip)){
             throw new Error('연결 실패');
         }
