@@ -13,42 +13,15 @@ let torConfig = {
     controlPassword: 'giraffe',
 }
 
-function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9051', controlPassword = 'giraffe' }) {
-    let suffixes = [
-        '',
-        '.sample',
-    ];
-    let paths = [
-        '/usr/local/etc/tor/torrc',
-        '/tor/etc/tor/torrc',
-        '/etc/tor/torrc',
-        '/lib/etc/tor/torrc',
-        '~/.torrc',
-        '~/Library/Application Support/TorBrowser-Data/torrc',
-    ];
+const httpAgent = function() {
+    return new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`);
+}
 
-    if (path == '') {
-        for ( var i = 0; i < paths.length; i++ ) {
-            for ( var j = 0; j < suffixes.length; j++ ) {
-                let p = _path.resolve(
-                    ( paths[ i ] + suffixes[ j ] )
-                    .split( '~' ).join( require( 'os' ).homedir() )
-                )
-        
-                try {
-                    let exists = _fs.existsSync( p )
-                    if ( exists ) {
-                        path = paths[ i ] + ' ?'
-                    }
-                } catch ( err ) {
-                    /* ignore */
-                }
-            }
-        }
-        if (path == '') {
-            throw new Error('torrc not found, specify with `tor --default-torrc <PATH>`');
-        }
-    }
+const httpsAgent = function() {
+    return new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`);
+}
+
+function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9051', controlPassword = 'giraffe' }) {
 
     torConfig.ip = ip === 'localhost' ? '127.0.0.1' : ip;
     torConfig.port = port;
@@ -59,8 +32,8 @@ function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9
     return {
         torNewSession,
         ...axios.create({
-            httpAgent: new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`),
-            httpsAgent: new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`)
+            'httpAgent': httpAgent(),
+            'httpsAgent': httpsAgent(),
         })
     };
 }
@@ -117,13 +90,6 @@ function torNewSession() {
             reject(err);
         });
     });
-}
-
-let httpAgent = function() {
-    return new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`)
-}
-let httpsAgent = function() {
-    return new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`);
 }
 
 module.exports = {

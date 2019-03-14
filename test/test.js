@@ -64,6 +64,8 @@ describe('토르 테스트', function(){
             throw new Error('아이피 변경이 안됨');
         }
 
+        console.log(`before: ${torip}, after: ${after.data}`);
+
         torip = after.data;
     }).timeout(100000);
 })
