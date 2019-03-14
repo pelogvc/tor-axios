@@ -13,7 +13,7 @@ let torConfig = {
     contorlPassword: 'giraffe',
 }
 
-function torSetup({ ip = 'localhost', port = '9050', path = '' }) {
+function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9051', controlPassword = 'giraffe' }) {
     let suffixes = [
         '',
         '.sample',
@@ -50,9 +50,11 @@ function torSetup({ ip = 'localhost', port = '9050', path = '' }) {
         }
     }
 
-    torConfig.ip = ip === 'localhost' ? 'localhost' : ip;
+    torConfig.ip = ip === 'localhost' ? '127.0.0.1' : ip;
     torConfig.port = port;
     torConfig.path = path;
+    torConfig.controlPort = controlPort;
+    torConfig.contorlPassword = controlPassword;
 
     return path;
 }
