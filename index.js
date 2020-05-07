@@ -14,11 +14,11 @@ let torConfig = {
 }
 
 const httpAgent = function() {
-    return new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`);
+    return new SocksProxyAgent(`socks5h://${torConfig.ip}:${torConfig.port}`);
 }
 
 const httpsAgent = function() {
-    return new SocksProxyAgent(`socks5://${torConfig.ip}:${torConfig.port}`);
+    return new SocksProxyAgent(`socks5h://${torConfig.ip}:${torConfig.port}`);
 }
 
 function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9051', controlPassword = 'giraffe' }) {
@@ -34,7 +34,9 @@ function torSetup({ ip = 'localhost', port = '9050', path = '', controlPort = '9
         ...axios.create({
             'httpAgent': httpAgent(),
             'httpsAgent': httpsAgent(),
-        })
+        }),
+        httpAgent,
+        httpsAgent,
     };
 }
 
@@ -93,9 +95,9 @@ function torNewSession() {
 }
 
 module.exports = {
+    httpAgent,
     torSetup,
     torNewSession,
     torConfig,
-    httpAgent,
     httpsAgent,
 }

@@ -17,6 +17,12 @@ describe('토르 테스트', function(){
     let realip = '';
     let torip = '';
 
+
+    it('httpAgent function check', async function() {
+        console.log(tor);
+        await tor.httpAgent();
+    }).timeout(100000);
+
     it('http로 아이피 확인', async function() {
         let response = await axios.get(url);
         realip = response.data;
@@ -68,4 +74,5 @@ describe('토르 테스트', function(){
 
         torip = after.data;
     }).timeout(100000);
+    
 })
