@@ -24,16 +24,32 @@ const response = await tor.get("http://api.ipify.org");
 console.log(response.data);
 ```
 
-### Using with custom axios instance
+### With axios config
+
+```typescript
+import { TorAxios } from "tor-axios";
+
+const tor = new TorAxios(
+  // TorSetupOptions
+  { port: 9050 },
+  // AxiosRequestConfig
+  {
+    baseURL: "https://api.example.com",
+    timeout: 5000,
+  }
+);
+
+const response = await tor.get("/users");
+console.log(response.data);
+```
+
+### Using httpAgent/httpsAgent directly
 
 ```typescript
 import axios from "axios";
 import { TorAxios } from "tor-axios";
 
-const tor = new TorAxios({
-  ip: "localhost",
-  port: 9050,
-});
+const tor = new TorAxios({ port: 9050 });
 
 const instance = axios.create({
   httpAgent: tor.httpAgent(),
@@ -73,7 +89,6 @@ cp /opt/homebrew/etc/tor/torrc.sample /opt/homebrew/etc/tor/torrc
 echo "ControlPort 9051" >> /opt/homebrew/etc/tor/torrc
 
 # Set hashed password (e.g. giraffe)
-# echo "HashedControlPassword $(tor --hash-password giraffe | tail -1)" >> /opt/homebrew/etc/tor/torrc
 echo "HashedControlPassword $(tor --hash-password {YOUR_PASSWORD} | tail -1)" >> /opt/homebrew/etc/tor/torrc
 
 # Restart Tor service
@@ -89,13 +104,13 @@ const tor = new TorAxios({
   ip: "localhost",
   port: 9050,
   controlPort: 9051,
-  controlPassword: "{YOUR_PASSWORD}", // controlPassword: "giraffe",
+  controlPassword: "{YOUR_PASSWORD}",
 });
 
 let response = await tor.get("http://api.ipify.org");
 console.log(response.data);
 
-await tor.newSession();
+await tor.refreshSession();
 
 response = await tor.get("http://api.ipify.org");
 console.log(response.data);

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import axios from 'axios';
-import { TorAxios } from '../src/index';
+import { TorAxios } from './index';
 
 const IP_REGEX =
   /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
@@ -13,7 +13,7 @@ describe('TorAxios', () => {
   let realIp = '';
   let torIp = '';
 
-  it('should create instance', () => {
+  it('should create TorAxios instance', () => {
     tor = new TorAxios({
       ip: 'localhost',
       port: 9050,
@@ -58,12 +58,12 @@ describe('TorAxios', () => {
     expect(realIp).not.toBe(torIp);
   });
 
-  it('should renew Tor session', async () => {
-    const result = await tor.newSession();
+  it('should refresh Tor session', async () => {
+    const result = await tor.refreshSession();
     expect(result).toBe('Tor session successfully renewed!!');
   });
 
-  it('Check Tor new session IP change', async () => {
+  it('Check Tor session IP change', async () => {
     const response = await tor.get<string>(URL);
     const newIp = response.data;
     console.log(`before: ${torIp}, after: ${newIp}`);
@@ -71,8 +71,11 @@ describe('TorAxios', () => {
     torIp = newIp;
   });
 
-  it('should expose underlying axios instance', () => {
-    expect(tor.instance()).toBeDefined();
-    expect(tor.instance().get).toBeDefined();
+  it('should create TorAxios with axios config', () => {
+    const torWithConfig = new TorAxios(
+      { port: 9050 },
+      { baseURL: 'https://api.example.com', timeout: 5000 }
+    );
+    expect(torWithConfig).toBeInstanceOf(TorAxios);
   });
 });

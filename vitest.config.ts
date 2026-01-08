@@ -4,5 +4,6 @@ export default defineConfig({
   test: {
     globals: true,
     testTimeout: 100000,
+    include: ['src/**/*.spec.ts'],
   },
 });
