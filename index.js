@@ -3,7 +3,7 @@ const net = require('net');
 const os = require('os');
 const _fs = require('fs');
 const _path = require('path');
-const SocksProxyAgent = require('socks-proxy-agent');
+const { SocksProxyAgent } = require('socks-proxy-agent');
 
 let torConfig = {
     ip: '127.0.0.1',
