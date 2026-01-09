@@ -1,6 +1,6 @@
 {
   "name": "tor-axios",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "use axios with tor",
   "type": "module",
   "main": "./dist/index.js",
