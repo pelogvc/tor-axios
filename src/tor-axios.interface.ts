@@ -1,6 +1,6 @@
 export interface TorSetupOptions {
   ip?: string;
-  port?: string | number;
-  controlPort?: string | number;
+  port?: number;
+  controlPort?: number;
   controlPassword?: string;
 }

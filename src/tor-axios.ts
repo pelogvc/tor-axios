@@ -7,15 +7,15 @@ import type { TorSetupOptions } from "./tor-axios.interface";
 export class TorAxios extends Axios {
   private torConfig: {
     ip: string;
-    port: string;
-    controlPort: string;
-    controlPassword: string;
+    port: number;
+    controlPort?: number;
+    controlPassword?: string;
   };
 
   constructor(setupOptions: TorSetupOptions = {}, axiosConfig: AxiosRequestConfig = {}) {
     const ip =
       setupOptions.ip === "localhost" ? "127.0.0.1" : (setupOptions.ip ?? "127.0.0.1");
-    const port = String(setupOptions.port ?? "9050");
+    const port = Number(setupOptions.port ?? 9050);
 
     const agent = new SocksProxyAgent(`socks5h://${ip}:${port}`);
 
@@ -28,8 +28,8 @@ export class TorAxios extends Axios {
     this.torConfig = {
       ip,
       port,
-      controlPort: String(setupOptions.controlPort ?? "9051"),
-      controlPassword: setupOptions.controlPassword ?? "giraffe",
+      ...(setupOptions.controlPort && { controlPort: Number(setupOptions.controlPort) }),
+      ...(setupOptions.controlPassword && { controlPassword: setupOptions.controlPassword }),
     };
   }
 
@@ -46,13 +46,18 @@ export class TorAxios extends Axios {
   }
 
   public async refreshSession(): Promise<string> {
+    if (!this.torConfig.controlPort || !this.torConfig.controlPassword) {
+      throw new Error("controlPort and controlPassword are required for refreshSession");
+    }
+
+    const { controlPort, controlPassword } = this.torConfig;
     const commands = [
-      `authenticate "${this.torConfig.controlPassword}"`,
+      `authenticate "${controlPassword}"`,
       "signal newnym",
       "quit",
     ];
 
-    const data = await this.sendCommand(commands);
+    const data = await this.sendCommand(commands, controlPort);
     const lines = data.split(os.EOL).slice(0, -1);
     const success = lines.every(
       (val) => val.length <= 0 || val.includes("250")
@@ -65,12 +70,12 @@ export class TorAxios extends Axios {
     return "Tor session successfully renewed!!";
   }
 
-  private sendCommand(commands: string[]): Promise<string> {
+  private sendCommand(commands: string[], controlPort: number): Promise<string> {
     return new Promise((resolve, reject) => {
       const socket = net.connect(
         {
           host: this.torConfig.ip,
-          port: Number(this.torConfig.controlPort),
+          port: controlPort,
         },
         () => {
           socket.write(commands.join("\n") + "\n");

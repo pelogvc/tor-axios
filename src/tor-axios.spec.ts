@@ -5,11 +5,12 @@ import { TorAxios } from './index';
 const IP_REGEX =
   /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
 
-const URL = 'http://api.ipify.org';
-const HTTPS_URL = 'https://api.ipify.org';
+const URL = 'http://icanhazip.com';
+const HTTPS_URL = 'https://icanhazip.com';
 
 describe('TorAxios', () => {
   let tor: TorAxios;
+  let torWithoutControl: TorAxios;
   let realIp = '';
   let torIp = '';
 
@@ -17,7 +18,7 @@ describe('TorAxios', () => {
     tor = new TorAxios({
       ip: 'localhost',
       port: 9050,
-      controlPort: '9051',
+      controlPort: 9051,
       controlPassword: 'giraffe',
     });
 
@@ -36,21 +37,21 @@ describe('TorAxios', () => {
 
   it('Check IP with HTTP', async () => {
     const response = await axios.get(URL);
-    realIp = response.data;
+    realIp = response.data.trim();
     console.log('Real IP:', realIp);
     expect(IP_REGEX.test(realIp)).toBe(true);
   });
 
   it('Check IP with HTTP over Tor', async () => {
     const response = await tor.get<string>(URL);
-    torIp = response.data;
+    torIp = response.data.trim();
     console.log('Tor IP:', torIp);
     expect(IP_REGEX.test(torIp)).toBe(true);
   });
 
   it('Check IP with HTTPS over Tor', async () => {
     const response = await tor.get<string>(HTTPS_URL);
-    torIp = response.data;
+    torIp = response.data.trim();
     expect(IP_REGEX.test(torIp)).toBe(true);
   });
 
@@ -65,7 +66,7 @@ describe('TorAxios', () => {
 
   it('Check Tor session IP change', async () => {
     const response = await tor.get<string>(URL);
-    const newIp = response.data;
+    const newIp = response.data.trim();
     console.log(`before: ${torIp}, after: ${newIp}`);
     expect(newIp).not.toBe(torIp);
     torIp = newIp;
@@ -77,5 +78,16 @@ describe('TorAxios', () => {
       { baseURL: 'https://api.example.com', timeout: 5000 }
     );
     expect(torWithConfig).toBeInstanceOf(TorAxios);
+  });
+
+  it('should throw error when refreshSession called without controlPort', async () => {
+    torWithoutControl = new TorAxios({
+      ip: 'localhost',
+      port: 9050,
+    });
+
+    await expect(torWithoutControl.refreshSession()).rejects.toThrow(
+      'controlPort and controlPassword are required for refreshSession'
+    );
   });
 });

@@ -18,10 +18,15 @@ import { TorAxios } from "tor-axios";
 const tor = new TorAxios({
   ip: "localhost",
   port: 9050,
+  controlPort: 9051,
+  controlPassword: "your_password",
 });
 
-const response = await tor.get("http://api.ipify.org");
+const response = await tor.get("http://icanhazip.com");
 console.log(response.data);
+
+// Refresh Tor session to get a new IP
+await tor.refreshSession();
 ```
 
 ### With axios config
@@ -56,7 +61,7 @@ const instance = axios.create({
   httpsAgent: tor.httpsAgent(),
 });
 
-const response = await instance.get("http://api.ipify.org");
+const response = await instance.get("http://icanhazip.com");
 console.log(response.data);
 ```
 
@@ -107,12 +112,12 @@ const tor = new TorAxios({
   controlPassword: "{YOUR_PASSWORD}",
 });
 
-let response = await tor.get("http://api.ipify.org");
+let response = await tor.get("http://icanhazip.com");
 console.log(response.data);
 
 await tor.refreshSession();
 
-response = await tor.get("http://api.ipify.org");
+response = await tor.get("http://icanhazip.com");
 console.log(response.data);
 ```
 
